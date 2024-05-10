@@ -3,7 +3,8 @@
 #include <time.h>
 #include <math.h>
 
-#define MAX_REPEATS 100000
+#define MAX_REPEATS 10000
+#define MAX_N 200000
 
 void selection_sort(int arr[], size_t n)
 {
@@ -25,35 +26,32 @@ void selection_sort(int arr[], size_t n)
         arr[i] = temp;
     }
 }
-double calculate_mean(long arr[], int n)
-{
-    long sum = 0;
-    for (int i = 0; i < n; i++)
-    {
-        sum += arr[i];
-    }
-    return (double)sum / n;
-}
-double calculate_standard_deviation(long arr[], int n)
-{
-    double mean = calculate_mean(arr, n);
-    double sq_sum = 0;
-    for (int i = 0; i < n; i++)
-    {
-        sq_sum += pow(arr[i] - mean, 2);
-    }
-    return sqrt(sq_sum / (n - 1));
-}
+
 double calculate_relative_standard_error(long arr[], int n)
 {
-    double standard_deviation = calculate_standard_deviation(arr, n);
-    double mean = calculate_mean(arr, n);
-    return (standard_deviation / mean) * 100;
+    double mean;
+    double m_sum = 0;
+    for (size_t i = 0; i < n; i++)
+    {
+        m_sum += arr[i];
+    }
+    mean = m_sum / n;
+    double sq_sum = 0;
+    for (size_t i = 0; i < n; i++)
+    {
+        sq_sum += pow((arr[i] - mean), 2);
+    }
+    sq_sum = sq_sum / (n - 1);
+    double standard_deviation = sqrt(sq_sum);
+    double standard_error = standard_deviation / sqrt(n);
+    double rse = (standard_error / mean) * 100;
+    return rse;
 }
 
-void copyArray(int* src, int* dest, int size) {
-    // Копируем элементы из исходного массива в новый
-    for (int i = 0; i < size; i++) {
+void copyArray(int *src, int *dest, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
         dest[i] = src[i];
     }
 }
@@ -61,16 +59,12 @@ void copyArray(int* src, int* dest, int size) {
 int main()
 {
     size_t n;
-    printf("Введите количество элементов в массиве: ");
     scanf("%zu", &n);
 
-    int arr_for_sort[n];
-    int arr[n];
-    srand(time(NULL)); // Инициализация генератора случайных чисел
+    int arr_for_sort[MAX_N];
+    int arr[MAX_N];
+    srand(time(NULL));
 
-    double total_time = 0;
-    size_t repeats = 0;
-    double mean_time;
     double rse = 100;
     struct timespec start, end;
     long data[MAX_REPEATS];
@@ -81,35 +75,29 @@ int main()
         arr_for_sort[i] = rand() % 100;
     }
 
-    do
+    while (rse >= 1)
     {
         copyArray(arr_for_sort, arr, n);
-        clock_gettime(CLOCK_MONOTONIC_RAW, &start); // Запуск таймера перед сортировкой
+        clock_gettime(CLOCK_MONOTONIC_RAW, &start);
 
         selection_sort(arr, n);
 
-        clock_gettime(CLOCK_MONOTONIC_RAW, &end); // Остановка таймера после сортировки
+        clock_gettime(CLOCK_MONOTONIC_RAW, &end);
 
         long ticks = end.tv_sec * 1000000000L + end.tv_nsec - start.tv_sec * 1000000000L - start.tv_nsec;
         data[data_n] = ticks;
-        printf("%zu: %ld\n", data_n, ticks);
-        data_n ++;
+        data_n++;
         if (data_n > 1)
         {
             rse = calculate_relative_standard_error(data, data_n);
         }
         if (data_n >= MAX_REPEATS)
         {
-            printf("ERROR MAXIMUM REPEATS REACHED\n");
             break;
         }
-        printf("repeats: %zu, rse: %lf\n", data_n, rse);
-    } while (rse > 1);
-    printf("====RESULT====");
-    printf("Размер исходного массива: %zu\n", n);
-    printf("Среднее время: %.2f ticks\n", calculate_mean(data, data_n));
-    printf("Количество повторов: %zu\n", data_n);
-    printf("RSE: %.2lf\n", rse);
+    }
 
+    for (size_t i = 0; i < data_n; i++)
+        printf("%ld ", data[i]);
     return 0;
 }
