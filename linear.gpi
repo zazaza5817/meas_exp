@@ -1,0 +1,9 @@
+set terminal svg size 800,600
+set output "plots/linear.svg"
+set style line 1 lt 1 lw 2
+set style line 2 lt 2 lw 2
+set grid xtics ytics
+set xlabel "Размер входного массива"
+set ylabel "Время выполнения"
+plot for [i=1:words(system("ls plot_data/linear/"))] "plot_data/linear/".word(system("ls plot_data/linear/"), i) using 1:2 with linespoints linestyle 1, "" using 1:2 with points linestyle 2 
+

@@ -16,4 +16,8 @@ python3 make_preproc.py
 echo "Запуск make_postproc.py..."
 python3 make_postproc.py
 
+mkdir plots
+gnuplot mustache.gpi
+gnuplot linear.gpi
+gnuplot errors.gpi
 echo "Все скрипты успешно выполнены."

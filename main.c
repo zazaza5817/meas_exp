@@ -54,13 +54,6 @@ double calculate_relative_standard_error(size_t n)
     return rse;
 }
 
-void copyArray(int *src, int *dest, int size)
-{
-    for (int i = 0; i < size; i++)
-    {
-        dest[i] = src[i];
-    }
-}
 
 int main()
 {
@@ -70,7 +63,6 @@ int main()
     size_t n;
     scanf("%zu", &n);
 
-    int arr_for_sort[MAX_N];
     int arr[MAX_N];
     srand(time(NULL));
 
@@ -79,14 +71,14 @@ int main()
     struct timespec start, end;
     size_t data_n = 0;
 
-    for (size_t i = 0; i < n; i++)
-    {
-        arr_for_sort[i] = rand() % 100;
-    }
+
 
     while (rse >= 1)
     {
-        copyArray(arr_for_sort, arr, n);
+        for (size_t i = 0; i < n; i++)
+        {
+            arr[i] = rand() % 100;
+        }
         clock_gettime(CLOCK_MONOTONIC_RAW, &start);
         selection_sort(arr, n);
         clock_gettime(CLOCK_MONOTONIC_RAW, &end);
@@ -98,6 +90,8 @@ int main()
         printf("%ld ", ticks);
         fclose(file);
 
+        arr[0] = arr[1];
+        arr[1] = 1234;
         data_n++;
         if (data_n > 1)
             rse = calculate_relative_standard_error(data_n);

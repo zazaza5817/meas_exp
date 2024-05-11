@@ -1,6 +1,7 @@
 import os
 import math
 import shutil
+import numpy as np
 
 def get_relative_standard_error(arr):
     mean = get_mean(arr)
@@ -15,12 +16,22 @@ def get_relative_standard_error(arr):
 def get_mean(arr):
     return sum(arr) / len(arr)
 
+def calculate_percentiles(arr):
+    lower_quartile = np.percentile(arr, 25)
+    median = np.percentile(arr, 50)
+    upper_quartile = np.percentile(arr, 75)
+    return lower_quartile, median, upper_quartile
+
 def process(content):
     data = [int(time) for time in content.split()]
     res = f"MIN: {min(data)}\n"
     res += f"MAX: {max(data)}\n"
     res += f"MEAN: {get_mean(data)}\n"
     res += f"RSE: {get_relative_standard_error(data)}\n"
+    lower_quartile, median, upper_quartile = calculate_percentiles(data)
+    res += f"LOWER QUARTILE: {lower_quartile}\n"
+    res += f"MEDIAN: {median}\n"
+    res += f"UPPER QUARTILE: {upper_quartile}\n"
     return res
 
 
