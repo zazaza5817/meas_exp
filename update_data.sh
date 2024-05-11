@@ -20,7 +20,7 @@ for exe_file in "$apps_dir"/*.exe; do
     
     # Запускаем.exe файл с различными входными данными и сохраняем результаты
     echo "Запуск тестов для $exe_name..."
-    for i in {1000..100000..500}; do
+    for i in {1000..20000..500}; do
         # Формируем команду для запуска.exe файла с входными данными
         command="echo $i > input.txt && $exe_file < input.txt"
         
@@ -30,6 +30,7 @@ for exe_file in "$apps_dir"/*.exe; do
         (eval "$command") > "$results_dir/$exe_name/$formatted_i.txt"
         # Удаляем input.txt после каждого запуска
         rm input.txt
+        rm temp_times.txt
     done
     echo "Тестирование $exe_name завершено."
 done

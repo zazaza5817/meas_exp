@@ -3,8 +3,8 @@
 #include <time.h>
 #include <math.h>
 
-#define MAX_REPEATS 10000
 #define MAX_N 200000
+#define FILE_NAME "temp_times.txt"
 
 void selection_sort(int arr[], size_t n)
 {
@@ -27,19 +27,25 @@ void selection_sort(int arr[], size_t n)
     }
 }
 
-double calculate_relative_standard_error(long arr[], int n)
+double calculate_relative_standard_error(size_t n)
 {
     double mean;
     double m_sum = 0;
+    long cur_term;
+    FILE *file = fopen(FILE_NAME, "r");
+
+
     for (size_t i = 0; i < n; i++)
     {
-        m_sum += arr[i];
+        fscanf(file, "%ld", &cur_term);
+        m_sum += cur_term;
     }
     mean = m_sum / n;
     double sq_sum = 0;
     for (size_t i = 0; i < n; i++)
     {
-        sq_sum += pow((arr[i] - mean), 2);
+        fscanf(file, "%ld", &cur_term);
+        sq_sum += pow((cur_term - mean), 2);
     }
     sq_sum = sq_sum / (n - 1);
     double standard_deviation = sqrt(sq_sum);
@@ -58,6 +64,9 @@ void copyArray(int *src, int *dest, int size)
 
 int main()
 {
+    FILE *file = fopen(FILE_NAME, "w");
+    fclose(file);
+
     size_t n;
     scanf("%zu", &n);
 
@@ -66,8 +75,8 @@ int main()
     srand(time(NULL));
 
     double rse = 100;
+    long ticks;
     struct timespec start, end;
-    long data[MAX_REPEATS];
     size_t data_n = 0;
 
     for (size_t i = 0; i < n; i++)
@@ -79,25 +88,20 @@ int main()
     {
         copyArray(arr_for_sort, arr, n);
         clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-
         selection_sort(arr, n);
-
         clock_gettime(CLOCK_MONOTONIC_RAW, &end);
 
-        long ticks = end.tv_sec * 1000000000L + end.tv_nsec - start.tv_sec * 1000000000L - start.tv_nsec;
-        data[data_n] = ticks;
+        ticks = end.tv_sec * 1000000000L + end.tv_nsec - start.tv_sec * 1000000000L - start.tv_nsec;
+
+        FILE *file = fopen(FILE_NAME, "a");
+        fprintf(file, "%ld ", ticks);
+        printf("%ld ", ticks);
+        fclose(file);
+
         data_n++;
         if (data_n > 1)
-        {
-            rse = calculate_relative_standard_error(data, data_n);
-        }
-        if (data_n >= MAX_REPEATS)
-        {
-            break;
-        }
+            rse = calculate_relative_standard_error(data_n);
     }
 
-    for (size_t i = 0; i < data_n; i++)
-        printf("%ld ", data[i]);
     return 0;
 }
