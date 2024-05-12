@@ -1,0 +1,10 @@
+#!/bin/gnuplot -persist
+
+set terminal svg size 1920, 1080
+set output "plots/linear(in).svg"
+
+set grid xtics ytics
+set xlabel "Размер входного массива"
+set ylabel "Время выполнения"
+
+plot "plot_data/linear/main_out.txt" using 1:2 with linespoints title "main(out)", "plot_data/linear/main_ptrs_out.txt" using 1:2 with linespoints title "main ptrs(out)", "plot_data/linear/main_arr_replaced_out.txt" using 1:2 with linespoints title "main arr replaced(out)"

@@ -20,6 +20,7 @@ def process_file(file_path):
         l_qurtile = float(lines[4].split(': ')[1])
         median = float(lines[5].split(': ')[1])
         u_qurtile = float(lines[6].split(': ')[1])
+        repeats = int(lines[7].split(': ')[1])
     
     new_file_path = f'./plot_data/linear/{app_name}.txt'
     os.makedirs('./plot_data/linear/', exist_ok=True)
@@ -34,8 +35,12 @@ def process_file(file_path):
     new_file_path = f'./plot_data/mustache/{app_name}.txt'
     os.makedirs('./plot_data/mustache/', exist_ok=True)
     with open(new_file_path, 'a') as dst_file:
-        dst_file.write(f'{x} {min_value} {l_qurtile} {mean_value} {u_qurtile} {max_value}\n')
+        dst_file.write(f'{x} {min_value} {l_qurtile} {median} {u_qurtile} {max_value}\n')
     
+    new_file_path = f'./plot_data/tables/{app_name}.txt'
+    os.makedirs('./plot_data/tables/', exist_ok=True)
+    with open(new_file_path, 'a') as dst_file:
+        dst_file.write(f'{x}\t{mean_value/1000000}\t{repeats}\t{rse_value}\n')
 
 
 def sort_file_by_first_column(filename):
@@ -49,13 +54,6 @@ def sort_file_by_first_column(filename):
     with open(filename, 'w') as file:
         file.writelines(sorted_lines)
 
-
-for root, dirs, files in os.walk('./plot_data/'):
-    for file in files:
-        if file.endswith('.txt'):
-            file_path = os.path.join(root, file)
-            os.remove(file_path)
-
 # Проходим по всем файлам в директории./preprocessed/
 for root, dirs, files in os.walk('./preprocessed/'):
     for file in files:
@@ -68,8 +66,5 @@ for root, dirs, files in os.walk('./plot_data/'):
         if file.endswith('.txt'):
             file_path = os.path.join(root, file)
             sort_file_by_first_column(file_path)
-
-
-
 
 print("Обработка завершена.")

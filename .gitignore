@@ -3,3 +3,7 @@ dataset
 preprocessed
 apps
 *.svg
+plots
+plot_data
+in_apps
+out_apps

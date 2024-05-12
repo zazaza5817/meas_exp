@@ -1,23 +1,26 @@
 #!/bin/bash
 
-# Запуск build_apps.sh
-echo "Запуск build_apps.sh..."
+echo "Очистка скомпилированных файлов"
+rm -rf ./apps
+echo "Компиляция файлов..."
 ./build_apps.sh
 
-# Запуск update_data.sh
-echo "Запуск update_data.sh..."
+echo "Обновление данных..."
 ./update_data.sh
 
-# Запуск make_preproc.py
-echo "Запуск make_preproc.py..."
+echo "Очистка файлов препроцессинга"
+rm -rf ./preprocessed
+echo "Препроцессинг..."
 python3 make_preproc.py
 
-# Запуск make_postproc.py
-echo "Запуск make_postproc.py..."
+echo "Очистка файлов постпроцессинга"
+rm -rf ./plot_data
+echo "Постпроцессинг..."
 python3 make_postproc.py
 
-mkdir plots
-gnuplot mustache.gpi
-gnuplot linear.gpi
-gnuplot errors.gpi
+echo "Очистка графиков"
+rm -rf ./plots
+echo "Построение графиков..."
+./plot_graphs.sh
+
 echo "Все скрипты успешно выполнены."

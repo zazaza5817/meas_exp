@@ -32,6 +32,7 @@ def process(content):
     res += f"LOWER QUARTILE: {lower_quartile}\n"
     res += f"MEDIAN: {median}\n"
     res += f"UPPER QUARTILE: {upper_quartile}\n"
+    res += f"REPEATS: {len(data)}\n"
     return res
 
 
@@ -60,7 +61,6 @@ for subdir, _, files in os.walk(source_dir):
         # Проверяем, что файл соответствует шаблону
         if not file.endswith('.txt'):
             continue
-        print(f"preprocessing {file}")
         # Полный путь к исходному файлу
         source_file_path = os.path.join(subdir, file)
         # Полный путь к целевому файлу

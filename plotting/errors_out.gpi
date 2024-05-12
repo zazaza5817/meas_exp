@@ -1,0 +1,12 @@
+#!/bin/gnuplot -persist
+
+set terminal svg size 1920, 1080
+set output "plots/error(out).svg"
+
+set grid xtics ytics
+set xlabel "Размер входного массива"
+set ylabel "Время выполнения"
+set boxwidth 0.5 relative
+set style fill solid 0.3
+
+plot "plot_data/error/main_out.txt" using 1:2:3:4 with errorlines title "main (out)", "plot_data/error/main_arr_replaced_out.txt" using 1:2:3:4 with errorlines title "arr replaced(out)", "plot_data/error/main_ptrs_out.txt" using 1:2:3:4 with errorlines title "main ptrs(out)"
